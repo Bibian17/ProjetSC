@@ -6,7 +6,7 @@ public class SharedObject implements Serializable, SharedObject_itf {
 
 	private int id;
 
-	public Object objet;
+	public Object obj;
 
 	// NL : no local lock (0)
 	// RLC : read lock cached (not taken) (1)
@@ -19,7 +19,7 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	private Client client;
 
 	public SharedObject (Object o, int id) {
-		this.objet = o;
+		this.obj = o;
 		this.id = id;
 		this.lock = 0;
 	}
@@ -37,7 +37,7 @@ public class SharedObject implements Serializable, SharedObject_itf {
 		switch(this.lock) {
 		case 0 :
 			this.lock = 3;
-			this.objet = Client.lock_read(this.id);
+			this.obj = Client.lock_read(this.id);
 		break;
 		case 1 :
 			this.lock = 3;
@@ -53,11 +53,11 @@ public class SharedObject implements Serializable, SharedObject_itf {
 		switch(this.lock) {
 		case 0 :
 			this.lock = 4;
-			this.objet = Client.lock_write(this.id);
+			this.obj = Client.lock_write(this.id);
 		break;
 		case 1 :
 			this.lock = 4;
-			this.objet = Client.lock_write(this.id);
+			this.obj = Client.lock_write(this.id);
 		break;
 		case 2 :
 			this.lock = 4;
@@ -94,7 +94,7 @@ public class SharedObject implements Serializable, SharedObject_itf {
 			this.lock = 3;
 		break;
 		}
-		return this.objet;
+		return this.obj;
 	}
 
 	// callback invoked remotely by the server
@@ -124,6 +124,6 @@ public class SharedObject implements Serializable, SharedObject_itf {
 			this.lock = 0;
 		break;
 		}
-		return this.objet;
+		return this.obj;
 	}
 }

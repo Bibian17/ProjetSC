@@ -23,25 +23,39 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	// initialization of the client layer
 	public static void init() {
 		correspondances = new HashMap<Integer,SharedObject_itf>();
-		// à compléter
+		try {
+			serveur = (Server_itf) Naming.lookup("//"+"localhost"+":"+5000+"/Server");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	// lookup in the name server
-	public static SharedObject lookup(String name) throws RemoteException {
-		int id = serveur.lookup(name);
-		return (SharedObject) correspondances.get(id);
+	public static SharedObject lookup(String name) {
+		SharedObject so = null;
+		try {
+			int id = serveur.lookup(name);
+			so = (SharedObject) correspondances.get(id);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+		return so;
 	}		
 	
 	// binding in the name server
-	public static void register(String name, SharedObject_itf so) throws RemoteException {
-		serveur.register(name,((SharedObject) so).getID());
+	public static void register(String name, SharedObject_itf so) {
+		try {
+			serveur.register(name,((SharedObject) so).getID());
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
 	}
 
 	// creation of a shared object
 	public static SharedObject create(Object o) {
 		SharedObject so = null;
 		try {
-			int idso = serveur.create(0);
+			int idso = serveur.create(o);
 			so = new SharedObject(o,idso);
 			correspondances.put(idso,so);
 		} catch (RemoteException e) {
@@ -78,18 +92,21 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 
 	// receive a lock reduction request from the server
 	public Object reduce_lock(int id) throws java.rmi.RemoteException {
+		System.out.println("reduce_lock");
 		return ((SharedObject) correspondances.get(id)).reduce_lock();
 	}
 
 
 	// receive a reader invalidation request from the server
 	public void invalidate_reader(int id) throws java.rmi.RemoteException {
+		System.out.println("invalidate_reader");
 		((SharedObject) correspondances.get(id)).invalidate_reader();
 	}
 
 
 	// receive a writer invalidation request from the server
 	public Object invalidate_writer(int id) throws java.rmi.RemoteException {
+		System.out.println("invalidate_writer");
 		return ((SharedObject) correspondances.get(id)).invalidate_writer();
 	}
 }
