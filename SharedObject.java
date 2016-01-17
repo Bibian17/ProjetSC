@@ -8,12 +8,12 @@ public class SharedObject implements Serializable, SharedObject_itf {
 
 	public Object objet;
 
-	// NL : no local lock (0)
-	// RLC : read lock cached (not taken) (1)
-	// WLC : write lock cached (2)
-	// RLT : read lock taken (3)
-	// WLT : write lock taken (4)
-	// RLT_WLC : read lock taken and write lock cached (5)
+	private static final int NL = 0;
+	private static final int RLC = 1;
+	private static final int WLC = 2;
+	private static final int RLT = 3;
+	private static final int WLT = 4;
+	private static final int RLT_WLC = 5;
 	private int lock;
 	
 	private Client client;
@@ -21,7 +21,7 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	public SharedObject (Object o, int id) {
 		this.objet = o;
 		this.id = id;
-		this.lock = 0;
+		this.lock = NL;
 	}
 
 	public int getID() {
@@ -35,15 +35,15 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	// invoked by the user program on the client node
 	public void lock_read() {
 		switch(this.lock) {
-		case 0 :
-			this.lock = 3;
+		case NL :
+			this.lock = RLT;
 			this.objet = Client.lock_read(this.id);
 		break;
-		case 1 :
-			this.lock = 3;
+		case RLC :
+			this.lock = RLT;
 		break;
-		case 2 :
-			this.lock = 5;
+		case WLC :
+			this.lock = RLT_WLC;
 		break;
 		}
 	}
@@ -51,16 +51,16 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	// invoked by the user program on the client node
 	public void lock_write() {
 		switch(this.lock) {
-		case 0 :
-			this.lock = 4;
+		case NL :
+			this.lock = WLT;
 			this.objet = Client.lock_write(this.id);
 		break;
-		case 1 :
-			this.lock = 4;
+		case RLC :
+			this.lock = WLT;
 			this.objet = Client.lock_write(this.id);
 		break;
-		case 2 :
-			this.lock = 4;
+		case WLC :
+			this.lock = WLT;
 		break;
 		}
 	}
@@ -68,14 +68,14 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	// invoked by the user program on the client node
 	public synchronized void unlock() {
 		switch(this.lock) {
-		case 3 :
-			this.lock = 1;
+		case RLT :
+			this.lock = RLC;
 		break;
-		case 4 :
-			this.lock = 2;
+		case WLT :
+			this.lock = WLC;
 		break;
-		case 5 :
-			this.lock = 2;
+		case RLT_WLC :
+			this.lock = WLC;
 		break;
 		}
 	}
@@ -83,47 +83,38 @@ public class SharedObject implements Serializable, SharedObject_itf {
 
 	// callback invoked remotely by the server
 	public synchronized Object reduce_lock() {
-		switch(this.lock) {
-		case 2 :
-			this.lock = 1;
-		break;
-		case 4 :
-			this.lock = 1;
-		break;
-		case 5 :
-			this.lock = 3;
-		break;
-		}
-		return this.objet;
+		while(lock == WLT || lock == RLT_WLC) {
+            try {
+                this.wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        lock = RLC;
+		return this.obj;
 	}
 
 	// callback invoked remotely by the server
 	public synchronized void invalidate_reader() {
-		switch(this.lock) {
-		case 1 :
-			this.lock = 0;
-		break;
-		case 3 :
-			this.lock = 0;
-		break;
-		case 5 :
-			this.lock = 0;
-		break;
-		}
+		while(lock == RLT) {
+            try {
+                this.wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+		lock = NL;
 	}
 
 	public synchronized Object invalidate_writer() {
-		switch(this.lock) {
-		case 2 :
-			this.lock = 0;
-		break;
-		case 4 :
-			this.lock = 0;
-		break;
-		case 5 :
-			this.lock = 0;
-		break;
-		}
-		return this.objet;
+		while(lock == RLT_WLC || lock == WLT) {
+            try {
+                this.wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        lock = NL;
+		return this.obj;
 	}
 }
