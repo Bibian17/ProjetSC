@@ -24,7 +24,8 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	public static void init() {
 		correspondances = new HashMap<Integer,SharedObject_itf>();
 		try {
-			serveur = (Server_itf) Naming.lookup("//"+"localhost"+":"+5000+"/Server");
+			client = new Client();
+			serveur = (Server_itf) Naming.lookup("//localhost:5000/Server");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

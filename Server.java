@@ -5,7 +5,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 
-public class Server extends UnicastRemoteObject implements Server_itf{
+public class Server extends UnicastRemoteObject implements Server_itf {
 	
 	private HashMap<String,Integer> correspondancesNomID;
 	private HashMap<Integer,ServerObject> correspondancesIDSO;
@@ -54,10 +54,9 @@ public class Server extends UnicastRemoteObject implements Server_itf{
 	}
 	
 	public static void main(String args[]){	
-		Server server;
 			try {
 			LocateRegistry.createRegistry(5000);
-			Naming.bind("//"+"localhost"+":"+5000+"/Server",new Server());
+			Naming.bind("//localhost:5000/Server",new Server());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
