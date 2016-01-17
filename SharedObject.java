@@ -6,7 +6,7 @@ public class SharedObject implements Serializable, SharedObject_itf {
 
 	private int id;
 
-	public Object objet;
+	public Object obj;
 
 	private static final int NL = 0;
 	private static final int RLC = 1;
@@ -15,11 +15,11 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	private static final int WLT = 4;
 	private static final int RLT_WLC = 5;
 	private int lock;
-	
+
 	private Client client;
 
 	public SharedObject (Object o, int id) {
-		this.objet = o;
+		this.obj = o;
 		this.id = id;
 		this.lock = NL;
 	}
@@ -31,7 +31,7 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	public int getLockType() {
 		return this.lock;
 	}
-	
+
 	// invoked by the user program on the client node
 	public void lock_read() {
 		switch(this.lock) {
