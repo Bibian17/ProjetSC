@@ -36,7 +36,15 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 		SharedObject so = null;
 		try {
 			int id = serveur.lookup(name);
-			so = (SharedObject) correspondances.get(id);
+			System.out.println("lookup" + id);
+			if (id!=-1) {
+				if (correspondances.containsKey(id)) {
+					so = (SharedObject) correspondances.get(id);
+				} else {
+					so = new SharedObject(null,id);
+					correspondances.put(id,so);
+				}
+			}
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
@@ -46,7 +54,9 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	// binding in the name server
 	public static void register(String name, SharedObject_itf so) {
 		try {
-			serveur.register(name,((SharedObject) so).getID());
+			int idso = ((SharedObject) so).getID();
+			serveur.register(name,idso);
+			correspondances.put(idso,so);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
@@ -58,7 +68,6 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 		try {
 			int idso = serveur.create(o);
 			so = new SharedObject(o,idso);
-			correspondances.put(idso,so);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
@@ -73,6 +82,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	public static Object lock_read(int id) {
 		Object o = null;
 		try {
+			System.out.println("lock_read");
 			o = serveur.lock_read(id, client);
 		} catch (RemoteException e) {
 			e.printStackTrace();
@@ -84,6 +94,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	public static Object lock_write (int id) {
 		Object o = null;
 		try {
+			System.out.println("lock_write");
 			o = serveur.lock_write(id, client);
 		} catch (RemoteException e) {
 			e.printStackTrace();

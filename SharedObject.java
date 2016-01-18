@@ -37,7 +37,7 @@ public class SharedObject implements Serializable, SharedObject_itf {
 		switch(this.lock) {
 		case NL :
 			this.lock = RLT;
-			this.objet = Client.lock_read(this.id);
+			this.obj = Client.lock_read(this.id);	
 		break;
 		case RLC :
 			this.lock = RLT;
@@ -53,11 +53,11 @@ public class SharedObject implements Serializable, SharedObject_itf {
 		switch(this.lock) {
 		case NL :
 			this.lock = WLT;
-			this.objet = Client.lock_write(this.id);
+			this.obj = Client.lock_write(this.id);
 		break;
 		case RLC :
 			this.lock = WLT;
-			this.objet = Client.lock_write(this.id);
+			this.obj = Client.lock_write(this.id);
 		break;
 		case WLC :
 			this.lock = WLT;

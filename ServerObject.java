@@ -26,7 +26,8 @@ public class ServerObject implements ServerObject_itf {
 		try {
 			if (this.lock==WL) {
 				this.objet = this.redacteur.reduce_lock(this.id);
-				redacteur=null;
+				this.lecteurs.add(this.redacteur);
+				this.redacteur=null;
 			}
 		} catch (RemoteException e) {
 			e.printStackTrace();

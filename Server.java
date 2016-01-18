@@ -22,6 +22,7 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 		System.out.println("lookup");
 		int res;
 		Integer tmp = correspondancesNomID.get(name);
+		System.out.println("lookup" + tmp);
 		if (tmp == null) {
 			res = -1;
 		} else {
