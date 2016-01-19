@@ -6,13 +6,17 @@ public class Transaction {
 	
     private boolean active;
 	
-	private HashMap<Integer,Object> objetsaccedes;
+	private HashMap<Integer,SharedObject> objetsaccedes;
 	
 	public Transaction() {
 		transaction = this;
 		this.active = false;
-		this.objetsaccedes = new HashMap<Integer,Object>();
-	}	
+		this.objetsaccedes = new HashMap<Integer,SharedObject>();
+	}
+	
+	public HashMap<Integer,SharedObject> getObjetsAccedes() {
+		return this.objetsaccedes;
+	}
 	
 	public static Transaction getCurrentTransaction() {
 		return transaction;
@@ -32,12 +36,13 @@ public class Transaction {
 	public boolean commit() {
 		this.objetsaccedes.clear();
 		this.active = false;
+		return true;
 	}
 		
 	// abandonne et annule une transaction (et passe en mode non transactionnel)
 	public void abort() {
 		for(Integer i : this.objetsaccedes.keySet()) {
-            Client.sharedObjects.get(i).obj = this.objetsaccedes.get(i);
+            Client.getCorrespondances.get(i).obj = this.objetsaccedes.get(i);
         }
 		this.objetsaccedes.clear();
 		this.active = false;

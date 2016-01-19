@@ -78,6 +78,7 @@ public class SharedObject implements Serializable, SharedObject_itf {
 			this.lock = WLC;
 		break;
 		}
+		this.notifyAll();
 	}
 
 

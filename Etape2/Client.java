@@ -14,6 +14,10 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	public Client() throws RemoteException {
 		super();
 	}
+	
+	public static HashMap<Integer,SharedObject_itf> getCorrespondances() {
+		return correspondances;
+	}
 
 
 ///////////////////////////////////////////////////
@@ -96,6 +100,11 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 		try {
 			System.out.println("lock_write");
 			o = serveur.lock_write(id, client);
+			Transaction t = Transaction.getCurrentTransaction();
+			if (!t.isActive()) {
+				t.start();
+				t.getObjetAccedes().put(id,(SharedObject) correspondances.get(id));
+			}
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
@@ -119,6 +128,9 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	// receive a writer invalidation request from the server
 	public Object invalidate_writer(int id) throws java.rmi.RemoteException {
 		System.out.println("invalidate_writer");
+		if (t.isActive()) {
+				t.commit();
+			}
 		return ((SharedObject) correspondances.get(id)).invalidate_writer();
 	}
 }
