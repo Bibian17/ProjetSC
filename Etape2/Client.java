@@ -103,7 +103,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 			Transaction t = Transaction.getCurrentTransaction();
 			if (!t.isActive()) {
 				t.start();
-				t.getObjetAccedes().put(id,(SharedObject) correspondances.get(id));
+				t.getObjetsAccedes().put(id,(SharedObject) correspondances.get(id));
 			}
 		} catch (RemoteException e) {
 			e.printStackTrace();
@@ -128,6 +128,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	// receive a writer invalidation request from the server
 	public Object invalidate_writer(int id) throws java.rmi.RemoteException {
 		System.out.println("invalidate_writer");
+        Transaction t = Transaction.getCurrentTransaction();
 		if (t.isActive()) {
 				t.commit();
 			}

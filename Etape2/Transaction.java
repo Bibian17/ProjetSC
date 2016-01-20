@@ -42,10 +42,14 @@ public class Transaction {
 	// abandonne et annule une transaction (et passe en mode non transactionnel)
 	public void abort() {
 		for(Integer i : this.objetsaccedes.keySet()) {
-            Client.getCorrespondances.get(i).obj = this.objetsaccedes.get(i);
+            ((SharedObject) Client.getCorrespondances().get(i)).obj = this.objetsaccedes.get(i);
         }
 		this.objetsaccedes.clear();
 		this.active = false;
 	}
+    
+    public static void main(String[] args){
+        Transaction t = new Transaction();
+    }
 	
 }
