@@ -12,7 +12,7 @@ public class TestEtape1 extends Frame {
 	public TextField data1;
 	public TextField data2;
 	private static HashMap<Integer,SharedObject> entiers;
-	final static int nbEntiers = 5;
+	public final static int nbEntiers = 5;
 
 	public static void main(String argv[]) {
 		
@@ -26,15 +26,15 @@ public class TestEtape1 extends Frame {
 			SharedObject s = Client.lookup("Entier" + i);
 			if (s == null) {
 				s = Client.create(new Entier(i));
-				Client.register("Entier"  i, s);
+				Client.register("Entier" +  i, s);
 			}
 			entiers.put((Integer) i,s);
-			// create the graphical part
-			new TestEtape1();
 		}
+        // create the graphical part
+        new TestEtape1();
 	}
 
-	public Irc() {
+	public TestEtape1() {
 	
 		setLayout(new FlowLayout());
 	
@@ -52,10 +52,10 @@ public class TestEtape1 extends Frame {
 		compute_button.addActionListener(new computeListener(this));
 		add(compute_button);
 		Button read_button = new Button("read");
-		read_button.addActionListener(new readListener(this));
+		read_button.addActionListener(new readListenerTest(this));
 		add(read_button);
 		
-		setSize(470,300);
+		setSize(500,400);
 		text.setBackground(Color.black); 
 		show();
 	}
@@ -65,18 +65,19 @@ public class TestEtape1 extends Frame {
 	}
 }
 
-class readListener implements ActionListener {
+class readListenerTest implements ActionListener {
 
 	TestEtape1 te1;
-	public readListener (TestEtape1 t) {
+	public readListenerTest (TestEtape1 t) {
 		te1 = t;
 	}
 	
 	public void actionPerformed (ActionEvent e) {
 	
-		int nb = Integer.parseInt(irc.data1.getText());
+        try{
+		int nb = Integer.parseInt(te1.data1.getText());
 		
-		if (nb>=1 && nb<=nbEntiers) {
+		if (nb>=1 && nb<=TestEtape1.nbEntiers) {
 			SharedObject so = TestEtape1.getEntiers().get(nb);
 			so.lock_read();
 			int i = ((Entier) (so.obj)).read();
@@ -84,6 +85,9 @@ class readListener implements ActionListener {
 			te1.text.append(i + "\n");
 			te1.data1.setText("");
 		}
+        }catch(Exception e) {
+            System.out.println("Il faut un entier !!!");
+        }
 		
 	}
 	
@@ -97,17 +101,19 @@ class computeListener implements ActionListener {
 	}
 	
 	public void actionPerformed (ActionEvent e) {
+        
+        try{
+		int nb1 = Integer.parseInt(te1.data1.getText());
+		int nb2 = Integer.parseInt(te1.data2.getText());
+
 		
-		int nb1 = Integer.parseInt(irc.data1.getText());
-		int nb2 = Integer.parseInt(irc.data2.getText());
-		
-		if (nb1>=1 && nb1<=nbEntiers && nb2>=1 && nb2<=nbEntiers && nb1!=nb2) {
+		if (nb1>=1 && nb1<=TestEtape1.nbEntiers && nb2>=1 && nb2<=TestEtape1.nbEntiers && nb1!=nb2) {
 			SharedObject so1 = TestEtape1.getEntiers().get(nb1);
 			SharedObject so2 = TestEtape1.getEntiers().get(nb2);
 			so1.lock_write();
 			so2.lock_write();
-			int i1 = ((Entier) (so.obj)).read();
-			int i2 = ((Entier) (so.obj)).read();
+			int i1 = ((Entier) (so1.obj)).read();
+			int i2 = ((Entier) (so2.obj)).read();
 			((Entier) (so1.obj)).write(i1+i2);
 			((Entier) (so2.obj)).write(i1-i2);
 			so1.unlock();
@@ -115,18 +121,10 @@ class computeListener implements ActionListener {
 			te1.data1.setText("");
 			te1.data2.setText("");
 		}
+        }catch(Exception e) {
+            System.out.println("Il faut un entier !!!");
+        }
+    }
 		
-		// get the value to be written from the buffer
-        String s = irc.data.getText();
-        	
-        	// lock the object in write mode
-		irc.sentence.lock_write();
-		
-		// invoke the method
-		((Sentence)(irc.sentence.obj)).write(Irc.myName+" wrote "+s);
-		irc.data.setText("");
-		
-		// unlock the object
-		irc.sentence.unlock();
-	}
+
 }
