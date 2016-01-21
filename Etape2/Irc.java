@@ -21,6 +21,8 @@ public class Irc extends Frame {
 			return;
 		}
 		myName = argv[0];
+
+		Transaction t = new Transaction();
 	
 		// initialize the system
 		Client.init();

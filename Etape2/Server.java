@@ -56,7 +56,6 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 	
 	public static void main(String args[]){	
 			try {
-            new Transaction();
 			LocateRegistry.createRegistry(5000);
 			Naming.bind("//localhost:5000/Server",new Server());
 		} catch (Exception e) {

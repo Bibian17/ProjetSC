@@ -47,9 +47,5 @@ public class Transaction {
 		this.objetsaccedes.clear();
 		this.active = false;
 	}
-    
-    public static void main(String[] args){
-        Transaction t = new Transaction();
-    }
-	
+
 }
