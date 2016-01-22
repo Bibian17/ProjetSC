@@ -10,6 +10,8 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	
 	private static Server_itf serveur;
 	private static Client_itf client;
+	
+	static StubGenerator stubGenerator;
 
 	public Client() throws RemoteException {
 		super();
@@ -26,6 +28,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 		try {
 			client = new Client();
 			serveur = (Server_itf) Naming.lookup("//localhost:5000/Server");
+			stubGenerator = new StubGenerator();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -40,8 +43,10 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 			if (id!=-1) {
 				if (correspondances.containsKey(id)) {
 					so = (SharedObject) correspondances.get(id);
+					
 				} else {
-					so = new SharedObject(null,id);
+					Constructor<?>[] constructeur = Class.forName(serveur.getType(id) + "_stub").getConstructors();
+					so (SharedObject) constructeur[0].newInstance(null,new Integer(id));
 					correspondances.put(id,so);
 				}
 			}
@@ -67,8 +72,9 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 		SharedObject so = null;
 		try {
 			int idso = serveur.create(o);
-			so = new SharedObject(o,idso);
-		} catch (RemoteException e) {
+			Constructor<?>[] constructeur = Class.forName(classes.get(idso) + "_stub").getConstructors();
+			so (SharedObject) constructeur[0].newInstance(o,new Integer(id));
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return so;

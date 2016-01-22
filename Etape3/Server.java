@@ -9,6 +9,7 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 	
 	private HashMap<String,Integer> correspondancesNomID;
 	private HashMap<Integer,ServerObject> correspondancesIDSO;
+	private HashMap<Integer,String> correspondancesIDType;
 	
 	private static int idauto = 0;
 	
@@ -16,6 +17,7 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 		super();
 		this.correspondancesNomID = new HashMap<String,Integer>();
 		this.correspondancesIDSO = new HashMap<Integer,ServerObject>();
+		this.correspondancesIDType = new HashMap<Integer,String>()
 	}
 
 	public int lookup(String name) throws java.rmi.RemoteException {
@@ -41,6 +43,7 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 		idauto++;
 		ServerObject so = new ServerObject(o,idauto);
 		this.correspondancesIDSO.put(idauto,so);
+		this.correspondancesIDType.put(idauto,o.getClass().getName());
 		return idauto;
 	}
 
@@ -52,6 +55,10 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 	public Object lock_write(int id, Client_itf client) throws java.rmi.RemoteException {
 		System.out.println("lock_write");
 		return this.correspondancesIDSO.get(id).lock_write(client);
+	}
+	
+	public String getType(int id) {
+		return this.correspondancesIDType.get(id);
 	}
 	
 	public static void main(String args[]){	
