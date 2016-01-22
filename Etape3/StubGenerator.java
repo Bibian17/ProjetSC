@@ -13,14 +13,10 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 
 public class StubGenerator {
-
-	private HashMap<String,Class<?>> classes;
 	
 	private final static File repCourant = new File(new File("").getAbsolutePath());
 	
-	public StubGenerator() {
-		this.classes = new HashMap<String,Class<?>>();
-	}
+	public StubGenerator() {}
 	
 	public static void main(String[] args) throws IOException {
 		ArrayList<Class<?>> classesSerializables = getClassesSerializables();

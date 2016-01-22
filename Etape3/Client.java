@@ -3,6 +3,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.rmi.registry.*;
 import java.util.HashMap;
 import java.net.*;
+import java.lang.reflect.Constructor;
 
 public class Client extends UnicastRemoteObject implements Client_itf {
 	
@@ -10,8 +11,6 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	
 	private static Server_itf serveur;
 	private static Client_itf client;
-	
-	static StubGenerator stubGenerator;
 
 	public Client() throws RemoteException {
 		super();
@@ -28,7 +27,6 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 		try {
 			client = new Client();
 			serveur = (Server_itf) Naming.lookup("//localhost:5000/Server");
-			stubGenerator = new StubGenerator();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -46,11 +44,11 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 					
 				} else {
 					Constructor<?>[] constructeur = Class.forName(serveur.getType(id) + "_stub").getConstructors();
-					so (SharedObject) constructeur[0].newInstance(null,new Integer(id));
+					so = (SharedObject) constructeur[0].newInstance(null,new Integer(id));
 					correspondances.put(id,so);
 				}
 			}
-		} catch (RemoteException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return so;
@@ -72,8 +70,8 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 		SharedObject so = null;
 		try {
 			int idso = serveur.create(o);
-			Constructor<?>[] constructeur = Class.forName(classes.get(idso) + "_stub").getConstructors();
-			so (SharedObject) constructeur[0].newInstance(o,new Integer(id));
+			Constructor<?>[] constructeur = Class.forName(o.getClass().getName() + "_stub").getConstructors();
+			so = (SharedObject) constructeur[0].newInstance(o,new Integer(idso));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
