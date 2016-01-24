@@ -126,5 +126,4 @@ class computeListener implements ActionListener {
         }
     }
 		
-
 }
