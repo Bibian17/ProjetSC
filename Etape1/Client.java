@@ -56,7 +56,6 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 		try {
 			int idso = ((SharedObject) so).getID();
 			serveur.register(name,idso);
-			correspondances.put(idso,so);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
@@ -68,6 +67,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 		try {
 			int idso = serveur.create(o);
 			so = new SharedObject(o,idso);
+			correspondances.put(idso,so);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}

@@ -24,11 +24,12 @@ public class TestEtape4 extends Frame {
 		// initialize the system
 		Client.init();
 		
-		sentence = (Sentence_itf) Client.lookup("Sentence");
+		sentence = (Sentence_itf) Client.create(new Sentence());
+		/*sentence = (Sentence_itf) Client.lookup("Sentence");
 		if (sentence == null) {
 			sentence = (Sentence_itf) Client.create(new Sentence());
 			Client.register("Sentence", sentence);
-		}
+		}*/
 		auteur = (Auteur_itf) Client.lookup("Auteur");
 		if (auteur == null) {
 			auteur = (Auteur_itf) Client.create(new Auteur(argv[0],sentence));
