@@ -11,8 +11,8 @@ public class TestEtape3 extends Frame {
 	public TextArea text;
 	public TextField data1;
 	public TextField data2;
-	private static SharedObject entier;
-	private static SharedObject sentence;
+	private static Entier_itf entier;
+	private static Sentence_itf sentence;
 
 	public static void main(String argv[]) {
 		
@@ -69,8 +69,8 @@ class readListenerTest implements ActionListener {
 	public void actionPerformed (ActionEvent e) {
 	
         try{
-			SharedObject so1 = TestEtape3.entier;
-			SharedObject so2 = TestEtape3.sentence;
+			Entier_itf so1 = TestEtape3.entier;
+			Sentence_itf so2 = TestEtape3.sentence;
 			so1.lock_read();
 			int i = ((Entier) (so1.obj)).read();
 			so1.unlock();
@@ -99,14 +99,14 @@ class writeListenerTest implements ActionListener {
         
         try{
 			int nb = Integer.parseInt(te3.data.getText());
-			SharedObject so = TestEtape3.entier;
+			Entier_itf so = TestEtape3.entier;
 			so.lock_write();
 			((Entier) (so.obj)).write(nb);
 			so.unlock();
 			te3.data1.setText("");
         } catch (NumberFormatException e) {
 			String s = te3.data.getText();
-			SharedObject so = TestEtape3.sentence;
+			Sentence_itf so = TestEtape3.sentence;
 			so.lock_write();
 			((Sentence) (so.obj)).write(s);
 			so.unlock();
