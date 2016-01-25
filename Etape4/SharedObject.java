@@ -118,4 +118,9 @@ public class SharedObject implements Serializable, SharedObject_itf {
         lock = NL;
 		return this.obj;
 	}
+
+	public Object readResolve() throws ObjectStreamException {
+		SharedObject s = (SharedObject) Client.getCorrespondances().get(id);
+		return s;
+	}
 }

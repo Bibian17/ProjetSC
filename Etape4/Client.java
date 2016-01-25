@@ -16,6 +16,9 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 		super();
 	}
 
+	public static HashMap<Integer,SharedObject_itf> getCorrespondances() {
+		return correspondances;
+	}
 
 ///////////////////////////////////////////////////
 //         Interface to be used by applications
@@ -41,7 +44,6 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 			if (id!=-1) {
 				if (correspondances.containsKey(id)) {
 					so = (SharedObject) correspondances.get(id);
-					
 				} else {
 					Constructor<?>[] constructeur = Class.forName(serveur.getType(id) + "_stub").getConstructors();
 					so = (SharedObject) constructeur[0].newInstance(null,new Integer(id));
