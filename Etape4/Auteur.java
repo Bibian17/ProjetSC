@@ -4,9 +4,9 @@ public class Auteur implements java.io.Serializable {
 	
 	private Sentence_itf sentence;
 	
-	public Auteur(String s, Sentnce_itf se) {
+	public Auteur(String s, Sentence_itf se) {
 		data = s;
-		Sentence_itf = se;
+		sentence = se;
 	}
 	
 	public void write(String s) {
@@ -18,7 +18,7 @@ public class Auteur implements java.io.Serializable {
 	}
 	
 	public Sentence_itf getSentence() {
-		return this.sentence
+		return this.sentence;
 	}
 	
 	public void setSentence(Sentence_itf s) {

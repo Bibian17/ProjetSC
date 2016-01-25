@@ -11,8 +11,8 @@ public class TestEtape4 extends Frame {
 	public TextArea text;
 	public TextField data1;
 	public TextField data2;
-	private static SharedObject sentence;
-	private static SharedObject auteur;
+	private static Sentence_itf sentence;
+	private static Auteur_itf auteur;
 
 	public static void main(String argv[]) {
 		
@@ -24,18 +24,26 @@ public class TestEtape4 extends Frame {
 		// initialize the system
 		Client.init();
 		
-		sentence = Client.lookup("Sentence");
+		sentence = (Sentence_itf) Client.lookup("Sentence");
 		if (sentence == null) {
-			sentence = Client.create(new Sentence());
+			sentence = (Sentence_itf) Client.create(new Sentence());
 			Client.register("Sentence", sentence);
 		}
-		auteur = Client.lookup("Auteur");
+		auteur = (Auteur_itf) Client.lookup("Auteur");
 		if (auteur == null) {
-			auteur = Client.create(new Auteur(argv[0],sentence));
+			auteur = (Auteur_itf) Client.create(new Auteur(argv[0],sentence));
 			Client.register("Auteur", auteur);
 		}
         // create the graphical part
         new TestEtape4();
+	}
+
+	public static Auteur_itf getAuteur() {
+		return auteur;
+	}
+
+	public static Sentence_itf getSentence() {
+		return sentence;
 	}
 
 	public TestEtape4() {
@@ -76,20 +84,20 @@ class readListenerTest implements ActionListener {
 	public void actionPerformed (ActionEvent e) {
 	
         try{
-			SharedObject so1 = TestEtape4.auteur;
-			SharedObject so2 = TestEtape4.sentence;
+			Auteur_itf so1 = TestEtape4.getAuteur();
+			Sentence_itf so2 = TestEtape4.getSentence();
 			so1.lock_read();
-			String s1 = ((String) (so1.obj)).read();
+			String s1 = so1.read();
 			so1.unlock();
 			te4.text.append("Auteur : " + s1 + " ; ");
 			so2.lock_read();
-			String s2 = ((Sentence)(so2.obj)).read();
+			String s2 = so2.read();
 			so2.unlock();
 			te4.text.append("Sentence : " + s2 + "\n");
 			te4.data1.setText("");
 			te4.data2.setText("");
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
 		
 	}
@@ -107,19 +115,19 @@ class writeListenerTest implements ActionListener {
 		
 		try {
 			String s1 = te4.data1.getText();
-			SharedObject so1 = TestEtape4.auteur
+			Auteur_itf so1 = TestEtape4.getAuteur();
 			so1.lock_write();
-			((Auteur)(so1.obj)).write(s1);
+			so1.write(s1);
 			so1.unlock();
 			te4.data1.setText("");
 			String s2 = te4.data2.getText();
-			SharedObject so2 = TestEtape4.sentence
+			Sentence_itf so2 = TestEtape4.getSentence();
 			so2.lock_write();
-			((Sentence)(so2.obj)).write(s2);
+			so2.write(s2);
 			so2.unlock();
 			te4.data2.setText("");
-		} catch (Exception e) {
-            e.printStackTrace();
+		} catch (Exception ex) {
+            ex.printStackTrace();
         }
 	}
 		

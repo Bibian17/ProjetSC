@@ -1,4 +1,4 @@
 public interface Auteur_itf extends SharedObject_itf {
-	public void write(int i);
+	public void write(String i);
 	public String read();
 }
