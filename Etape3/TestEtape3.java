@@ -9,8 +9,7 @@ import java.rmi.registry.*;
 
 public class TestEtape3 extends Frame {
 	public TextArea text;
-	public TextField data1;
-	public TextField data2;
+	public TextField data;
 	private static Entier_itf entier;
 	private static Sentence_itf sentence;
 
@@ -19,18 +18,26 @@ public class TestEtape3 extends Frame {
 		// initialize the system
 		Client.init();
 		
-		sentence = Client.lookup("Sentence");
+		sentence = (Sentence_itf) Client.lookup("Sentence");
 		if (sentence == null) {
-			sentence = Client.create(new Sentence());
+			sentence = (Sentence_itf) Client.create(new Sentence());
 			Client.register("Sentence", sentence);
 		}
-		entier = Client.lookup("Entier");
+		entier = (Entier_itf) Client.lookup("Entier");
 		if (entier == null) {
-			entier = Client.create(new Entier());
+			entier = (Entier_itf) Client.create(new Entier(0));
 			Client.register("Entier", entier);
 		}
         // create the graphical part
         new TestEtape3();
+	}
+
+	public static Entier_itf getEntier() {
+		return entier;
+	}
+
+	public static Sentence_itf getSentence() {
+		return sentence;
 	}
 
 	public TestEtape3() {
@@ -69,19 +76,19 @@ class readListenerTest implements ActionListener {
 	public void actionPerformed (ActionEvent e) {
 	
         try{
-			Entier_itf so1 = TestEtape3.entier;
-			Sentence_itf so2 = TestEtape3.sentence;
+			Entier_itf so1 = TestEtape3.getEntier();
+			Sentence_itf so2 = TestEtape3.getSentence();
 			so1.lock_read();
-			int i = ((Entier) (so1.obj)).read();
+			int i = so1.read();
 			so1.unlock();
 			te3.text.append("Entier : " + i + " ; ");
 			so2.lock_read();
-			String s = ((Sentence)(so2.obj)).read();
+			String s = so2.read();
 			so2.unlock();
 			te3.text.append("Sentence : " + s + "\n");
 			te3.data.setText("");
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
 		
 	}
@@ -97,21 +104,21 @@ class writeListenerTest implements ActionListener {
 	
 	public void actionPerformed (ActionEvent e) {
         
-        try{
+   	try{
 			int nb = Integer.parseInt(te3.data.getText());
-			Entier_itf so = TestEtape3.entier;
+			Entier_itf so = TestEtape3.getEntier();
 			so.lock_write();
-			((Entier) (so.obj)).write(nb);
+			so.write(nb);
 			so.unlock();
-			te3.data1.setText("");
-        } catch (NumberFormatException e) {
+			te3.data.setText("");
+      } catch (NumberFormatException ex) {
 			String s = te3.data.getText();
-			Sentence_itf so = TestEtape3.sentence;
+			Sentence_itf so = TestEtape3.getSentence();
 			so.lock_write();
-			((Sentence) (so.obj)).write(s);
+			so.write(s);
 			so.unlock();
-			te3.data1.setText("");
-        }
-    }
+			te3.data.setText("");
+      }
+   }
 		
 }

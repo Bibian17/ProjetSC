@@ -61,7 +61,7 @@ public class ServerObject implements ServerObject_itf {
 			}
 		break;
 		}
-		this.lock = 2;
+		this.lock = WL;
 		this.redacteur = client;;
 		return this.objet;
 	}

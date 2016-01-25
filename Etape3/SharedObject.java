@@ -85,37 +85,37 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	// callback invoked remotely by the server
 	public synchronized Object reduce_lock() {
 		while(lock == WLT || lock == RLT_WLC) {
-            try {
-                this.wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        lock = RLC;
+      	try {
+         	this.wait();
+      	} catch (InterruptedException e) {
+         	e.printStackTrace();
+      	}
+   	}
+  		lock = RLC;
 		return this.obj;
 	}
 
 	// callback invoked remotely by the server
 	public synchronized void invalidate_reader() {
 		while(lock == RLT) {
-            try {
-                this.wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+      	try {
+         	this.wait();
+         } catch (InterruptedException e) {
+            e.printStackTrace();
+        	}
+		}
 		lock = NL;
 	}
 
 	public synchronized Object invalidate_writer() {
 		while(lock == RLT_WLC || lock == WLT) {
-            try {
-                this.wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        lock = NL;
+      	try {
+         	this.wait();
+         } catch (InterruptedException e) {
+            e.printStackTrace();
+         }
+   	}
+     	lock = NL;
 		return this.obj;
 	}
 }

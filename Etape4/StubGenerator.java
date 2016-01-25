@@ -28,7 +28,6 @@ public class StubGenerator {
 	private static ArrayList<Class<?>> getClassesSerializables() {
 		ArrayList<Class<?>> classesSerializables = new ArrayList<Class<?>>();
 		String[] listeFichiers = repCourant.list();
-		System.out.println(System.getProperty("user.dir"));
 		for (String s : listeFichiers) {
 			if (s.endsWith(".java")) {
 				Class<?> classeJava = null;

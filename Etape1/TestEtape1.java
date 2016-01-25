@@ -74,20 +74,20 @@ class readListenerTest implements ActionListener {
 	
 	public void actionPerformed (ActionEvent e) {
 	
-        try{
-		int nb = Integer.parseInt(te1.data1.getText());
+		try{
+			int nb = Integer.parseInt(te1.data1.getText());
 		
-		if (nb>=1 && nb<=TestEtape1.nbEntiers) {
-			SharedObject so = TestEtape1.getEntiers().get(nb);
-			so.lock_read();
-			int i = ((Entier) (so.obj)).read();
-			so.unlock();
-			te1.text.append(i + "\n");
-			te1.data1.setText("");
-		}
-        }catch(Exception e) {
-            System.out.println("Il faut un entier !!!");
-        }
+			if (nb>=1 && nb<=TestEtape1.nbEntiers) {
+				SharedObject so = TestEtape1.getEntiers().get(nb);
+				so.lock_read();
+				int i = ((Entier) (so.obj)).read();
+				so.unlock();
+				te1.text.append(i + "\n");
+				te1.data1.setText("");
+			}
+		} catch(Exception ex) {
+      	System.out.println("Il faut un entier !!!");
+      }
 		
 	}
 	
@@ -102,28 +102,28 @@ class computeListener implements ActionListener {
 	
 	public void actionPerformed (ActionEvent e) {
         
-        try{
-		int nb1 = Integer.parseInt(te1.data1.getText());
-		int nb2 = Integer.parseInt(te1.data2.getText());
+      try{
+			int nb1 = Integer.parseInt(te1.data1.getText());
+			int nb2 = Integer.parseInt(te1.data2.getText());
 
 		
-		if (nb1>=1 && nb1<=TestEtape1.nbEntiers && nb2>=1 && nb2<=TestEtape1.nbEntiers && nb1!=nb2) {
-			SharedObject so1 = TestEtape1.getEntiers().get(nb1);
-			SharedObject so2 = TestEtape1.getEntiers().get(nb2);
-			so1.lock_write();
-			so2.lock_write();
-			int i1 = ((Entier) (so1.obj)).read();
-			int i2 = ((Entier) (so2.obj)).read();
-			((Entier) (so1.obj)).write(i1+i2);
-			((Entier) (so2.obj)).write(i1-i2);
-			so1.unlock();
-			so2.unlock();
-			te1.data1.setText("");
-			te1.data2.setText("");
-		}
-        }catch(Exception e) {
-            System.out.println("Il faut un entier !!!");
-        }
-    }
+			if (nb1>=1 && nb1<=TestEtape1.nbEntiers && nb2>=1 && nb2<=TestEtape1.nbEntiers && nb1!=nb2) {
+				SharedObject so1 = TestEtape1.getEntiers().get(nb1);
+				SharedObject so2 = TestEtape1.getEntiers().get(nb2);
+				so1.lock_write();
+				so2.lock_write();
+				int i1 = ((Entier) (so1.obj)).read();
+				int i2 = ((Entier) (so2.obj)).read();
+				((Entier) (so1.obj)).write(i1+i2);
+				((Entier) (so2.obj)).write(i1-i2);
+				so1.unlock();
+				so2.unlock();
+				te1.data1.setText("");
+				te1.data2.setText("");
+			}
+   	} catch(Exception ex) {
+      	System.out.println("Il faut un entier !!!");
+    	}
+	}
 		
 }

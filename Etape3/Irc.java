@@ -27,9 +27,9 @@ public class Irc extends Frame {
 		
 		// look up the IRC object in the name server
 		// if not found, create it, and register it in the name server
-		Sentence_itf s = (Sentence_itf)Client.lookup("IRC");
+		Sentence_itf s = (Sentence_itf) Client.lookup("IRC");
 		if (s == null) {
-			s = (Sentence_itf)Client.create(new Sentence());
+			s = (Sentence_itf) Client.create(new Sentence());
 			Client.register("IRC", s);
 		}
 		// create the graphical part
@@ -94,9 +94,9 @@ class writeListener implements ActionListener {
 	public void actionPerformed (ActionEvent e) {
 		
 		// get the value to be written from the buffer
-        	String s = irc.data.getText();
+      String s = irc.data.getText();
         	
-        	// lock the object in write mode
+      // lock the object in write mode
 		irc.sentence.lock_write();
 		
 		// invoke the method
